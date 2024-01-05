@@ -1,2 +1,2 @@
-#Network basics 2
-IP address and localhost resolve
+<h2>Network basics 2</h2>
+<p> IP address and localhost resolve</p>
