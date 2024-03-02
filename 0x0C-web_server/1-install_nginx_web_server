@@ -1,9 +1,44 @@
 #!/usr/bin/env bash
-# installs nginx and configure it to listen on port 80
-# print "Hello World"
+# Installs Nginx, configures it to listen on port 80, and prints "Hello World"
 
-apt-get -y update
-apt-get -y install nginx
-ufw allow "NGINX HTTP"
+if [[ $EUID -ne 0 ]]; then
+	    echo "This script must be run as root."
+	        exit 1
+fi
+
+apt-get -y update && apt-get -y install nginx
+
+if [[ $? -ne 0 ]]; then
+	    echo "Error installing Nginx."
+	        exit 1
+fi
+
+ufw allow "Nginx HTTP"
+
+if [[ $? -ne 0 ]]; then
+	    echo "Error allowing NGINX HTTP through UFW."
+	        exit 1
+fi
+
 echo 'Hello World!' > /var/www/html/index.html
-sudo service nginx restart
+
+if [[ $? -ne 0 ]]; then
+	    echo "Error creating index.html file."
+	        exit 1
+fi
+
+service nginx restart
+
+if [[ $? -ne 0 ]]; then
+	    echo "Error restarting Nginx."
+	        exit 1
+fi
+
+# Verify Nginx is running and returning 200 for "/"
+nginx_status=$(curl -s -o /dev/null -w "%{http_code}" http://localhost/)
+if [[ $nginx_status -ne 200 ]]; then
+	    echo "Error: Nginx did not return 200 when querying /."
+	        exit 1
+fi
+
+echo "Nginx installed and configured successfully. Hello World!"
