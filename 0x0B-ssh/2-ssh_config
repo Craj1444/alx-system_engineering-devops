@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# SSH Config File
+Host 67.202.20.141
+	User ubuntu
+	PasswordAuthentication no
+	IdentityFile ~/.ssh/school
